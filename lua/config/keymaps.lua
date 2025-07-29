@@ -1,6 +1,6 @@
 local map = vim.keymap.set
 
--- Base
+-------------------- Base --------------------
 
 map("n", ";", ":", { desc = "CMD enter command mode" })
 map("i", "jj", "<ESC>")
@@ -18,41 +18,24 @@ map("n", "<leader>w", "<CMD>cclose<CR>", { desc = "Close quickfix" })
 map("n", "<Tab>", "<cmd>cnext<CR>")
 map("n", "<S-Tab>", "<cmd>cprev<CR>")
 
--- Codeium
+-------------------- Codeium --------------------
 vim.keymap.set("i", "ff", function()
 	return vim.fn["codeium#Accept"]()
 end, { expr = true, silent = true })
 
--- Telescope
+-------------------- Telescope --------------------
 
 local builtin = require("telescope.builtin")
 map("n", "<leader>ff", builtin.find_files, { desc = "Telescope find files" })
 map("n", "<leader>fg", builtin.live_grep, { desc = "Telescope live grep" })
 map("n", "<leader>fb", builtin.buffers, { desc = "Telescope buffers" })
 
--- -- Trouble
--- map("n", "<leader>xx", "<cmd>Trouble diagnostics toggle<cr>", { desc = "Diagnostics (Trouble)" })
--- map("n", "<leader>xX", "<cmd>Trouble diagnostics toggle filter.buf=0<cr>", { desc = "Buffer Diagnostics (Trouble)" })
+-------------------- Trouble --------------------
 map("n", "<leader>cs", "<cmd>Trouble symbols toggle focus=true<cr>", { desc = "Symbols (Trouble)" })
--- map(
--- 	"n",
--- 	"<leader>cl",
--- 	"<cmd>Trouble lsp toggle focus=false win.position=right<cr>",
--- 	{ desc = "LSP Definitions / references / ... (Trouble)" }
--- )
--- map("n", "<leader>xL", "<cmd>Trouble loclist toggle<cr>", { desc = "Location List (Trouble)" })
--- map("n", "<leader>xQ", "<cmd>Trouble qflist toggle<cr>", { desc = "Quickfix List (Trouble)" })
--- map("n", "<leader>xn", function()
--- 	require("trouble").next({ skip_groups = true, jump = true })
--- end, { desc = "Next Diagnostic" })
---
--- map("n", "<leader>xp", function()
--- 	require("trouble").prev({ skip_groups = true, jump = true })
--- end, { desc = "Previous Diagnostic" })
 
--- LSP diagnostics
+-------------------- Quickfix --------------------
 
---onvert LSP diagnostics severity to quickfix type
+--convert LSP diagnostics severity to quickfix type
 local function severityToType(severity)
 	local types = { "E", "W", "I", "N" }
 	return types[severity] or "I"
@@ -90,3 +73,30 @@ function LspToQf()
 end
 
 map("n", "<leader>E", LspToQf, { desc = "LSP diagnostics to quickfix" })
+
+-------------------- DAP ------------------
+local dap = require("dap")
+local dapui = require("dapui")
+
+map("n", "<F5>", function()
+	dap.continue()
+end)
+map("n", "<F10>", function()
+	dap.step_over()
+end)
+map("n", "<F11>", function()
+	dap.step_into()
+end)
+map("n", "<F12>", function()
+	dap.step_out()
+end)
+map("n", "<leader>b", function()
+	dap.toggle_breakpoint()
+end)
+map("n", "<leader>dr", function()
+	dap.repl.toggle()
+end)
+map("n", "<leader>de", function()
+	dapui.eval()
+end)
+map("n", "<leader>dn", "<CMD>DapNew<Cr>")
